@@ -1,9 +1,9 @@
 TreeHacks 2021
-Edward, Vivek, Samual, Shanmathi
+Edward, Vivek, Samuel, Shanmathi
 
 
-Reimplemented the paper "BiMPM: Bilateral Multi-Perspective Matching for Natural Language Sentences" to be compabitble with Tensorflow 2.0 and added new input layer.
-Replaced bag of words model with novel sentence structure representation
+Reimplemented the paper "BiMPM: Bilateral Multi-Perspective Matching for Natural Language Sentences" to be compabitble with Tensorflow 2.0.
+Created novel sentence structure representation to replace bag of words in the future
 
 Code tested on Quora questions dataset
 
