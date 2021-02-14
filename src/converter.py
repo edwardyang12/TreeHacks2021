@@ -1,6 +1,6 @@
 import tensorflow as tf
 from tensorflow import keras
-#!pip install stanza
+!pip install stanza
 import stanza
 from stanza import *
 
@@ -37,8 +37,9 @@ def one_hot_array(num):
   return arr
 
 # Takes a word or lemma as a string and converts it to an array representation
-def represent(str, binary_mode=True):
-  #return str
+def represent(str, binary_mode=True, str_mode=False):
+  if str_mode:
+    return str
   rep = representation_dictionary.get(str, None)
   if rep is None:
     global rep_counter
@@ -56,7 +57,7 @@ def represent(str, binary_mode=True):
       
 
 # Takes a parsed sentence and transforms it to an array for network input
-def parse_to_array(parse):
+def parse_to_array(parse, str_mode=False):
   arr = [[0]*word_representation_length]*arr_length
 
   # Identify the subject, verb, and object
@@ -80,21 +81,21 @@ def parse_to_array(parse):
   #pr()
   if subject is not None:
     pr(subject.text)
-    arr[index_dictionary["sub"][0]] = represent(subject.lemma)
+    arr[index_dictionary["sub"][0]] = represent(subject.lemma, str_mode=str_mode)
   if verb is not None:
     pr(verb.text)
-    arr[index_dictionary["verb"][0]] = represent(verb.lemma)
+    arr[index_dictionary["verb"][0]] = represent(verb.lemma, str_mode=str_mode)
   if obj is not None:
     pr(obj.text)
-    arr[index_dictionary["obj"][0]] = represent(obj.lemma) 
+    arr[index_dictionary["obj"][0]] = represent(obj.lemma, str_mode=str_mode) 
 
   #counters = {"sub":(0,1), "verb":(15,1), "obj":(30,1), "misc":(45,0)}  # Bookkeeping for the index dictionary
   
   tree = [[subject], [verb], [obj], []]
   ids = [[], [], []]
 
-  for i in range(4):
-    pr(parse.words[i])
+  #for i in range(4):
+   # pr(parse.words[i])
 
   # Populate direct dependents
   for word in parse.words:
@@ -185,11 +186,11 @@ def parse_to_array(parse):
           if j >= len(indices):
             tree[3].append(word)  # Overflow to miscellaneous
           else:
-            arr[indices[j]] = represent(word.lemma)
+            arr[indices[j]] = represent(word.lemma, str_mode=str_mode)
   
   for i in range(min(5, len(tree[3]))):
     pr(index_dictionary[3])
-    arr[index_dictionary[3][i]] = represent(tree[3][i].lemma)
+    arr[index_dictionary[3][i]] = represent(tree[3][i].lemma, str_mode=str_mode)
                     
   pr()
   pr(tree[0][1:])
@@ -206,16 +207,37 @@ def parse_to_array(parse):
 
 # This section based at least partially on https://stanfordnlp.github.io/stanza/#getting-started and https://stanfordnlp.github.io/stanza/depparse.html
 stanza.download("en")
+
 nlp = stanza.Pipeline("en", processors='depparse, lemma, pos, tokenize')
 
 def convert_to_array(text):
   parse = nlp(text).sentences[0]
   return parse_to_array(parse)
 
-#text = "Some happy people quickly create sentences like this one in the cold cold cold cold cold cold cold cold cold cold cold cold cold cold cold cold snowy explosive miscellaneous morning"
-# text = "This sentence has an object with a clause"
-#parse = nlp(text).sentences[0]
-#pr(parse)
-#parse_to_array(parse)
-# End section
+# Stand-alone distance measure
+def get_distance(text1, text2):
+  parse1 = nlp(text1).sentences[0]
+  parse2 = nlp(text2).sentences[0]
+  arr1 = parse_to_array(parse1, True)
+  print(arr1)
+  arr2 = parse_to_array(parse2, True)
+  print(arr2)
+  dist = 0
+  tot = 0
+  for i in range(len(arr1)):
+    if arr1[i] != arr2[i]:
+      dist += 1
+    if not(isinstance(arr1[i], list) and isinstance(arr2[i], list)):
+      tot += 1
+  return dist/(tot+1)
 
+print(get_distance("Where is the bathroom?", "Where is the bathroom located?"))
+print(get_distance("What is life?", "What is the purpose of life?"))
+print(get_distance("Something is wrong", "Idk why"))
+      
+text = "Some happy people quickly create sentences like this one in the cold cold cold cold cold cold cold cold cold cold cold cold cold cold cold cold snowy explosive miscellaneous morning"
+# text = "This sentence has an object with a clause"
+parse = nlp(text).sentences[0]
+pr(parse)
+parse_to_array(parse, True)
+# End section
