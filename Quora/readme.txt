@@ -1,3 +1,7 @@
+Modified source code, originally from https://github.com/zhiguowang/BiMPM
+
+Readme from original source:
+
 train.tsv/dev.tsv/test.tsv are our split of the original "Quora Sentence Pairs" dataset (https://data.quora.com/First-Quora-Dataset-Release-Question-Pairs).
 
 Each line of these files represents a question pair, and includes four tab-seperated fields: 
