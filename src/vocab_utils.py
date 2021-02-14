@@ -91,14 +91,16 @@ class Vocab(object):
         self.word2id = {}
         self.id2word = {}
         
-        vec_file = open(vec_path, 'rt')
+        vec_file = open(vec_path, 'rt', encoding="utf-8")
         word_vecs = {}
         for line in vec_file:
-            line = line.decode('utf-8').strip()
+            line = line.strip()
             parts = line.split('\t')
             cur_index = int(parts[0])
             word = parts[1]
-            vector = np.array(map(float,re.split('\\s+', parts[2])), dtype='float32')
+            vector = np.array(re.split('\\s+', parts[2]))
+            vector = vector.astype(np.float)
+            # vector = np.array(map(float,re.split('\\s+', parts[2])), dtype='float32')
             self.word2id[word] = cur_index 
             self.id2word[cur_index] = word
             word_vecs[cur_index] = vector
@@ -152,12 +154,12 @@ class Vocab(object):
         self.word2id = {}
         self.id2word = {}
         
-        vec_file = open(vec_path, 'rt')
+        vec_file = open(vec_path, 'rt', encoding="utf-8")
         header = vec_file.readline()
         self.vocab_size, self.word_dim = map(int, header.split())
         self.word_vecs = np.zeros((self.vocab_size+1, self.word_dim), dtype=np.float32) # the last dimension is all zero
         for line in vec_file:
-            line = line.decode('utf-8').strip()
+            line = line.strip()
             parts = line.split(' ')
             word = parts[0]
             if (voc is not None) and (word not in voc): continue

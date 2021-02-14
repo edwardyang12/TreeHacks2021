@@ -132,7 +132,9 @@ class SentenceMatchModelGraph(object):
 
         # in_question_repres = tf.multiply(in_question_repres, tf.expand_dims(question_mask, axis=-1))
         # in_passage_repres = tf.multiply(in_passage_repres, tf.expand_dims(mask, axis=-1))
-
+        
+        print("===========================")
+        print(in_question_repres,self.question_lengths,question_mask)
         # ========Bilateral Matching=====
         (match_representation, match_dim) = match_utils.bilateral_match_func(in_question_repres, in_passage_repres,
                         self.question_lengths, self.passage_lengths, question_mask, mask, input_dim, is_training, options=options)
