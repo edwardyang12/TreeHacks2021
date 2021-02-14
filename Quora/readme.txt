@@ -1,6 +1,6 @@
 Modified source code, originally from https://github.com/zhiguowang/BiMPM
 
-Readme from original source:
+Readme from source inside https://github.com/zhiguowang/BiMPM:
 
 train.tsv/dev.tsv/test.tsv are our split of the original "Quora Sentence Pairs" dataset (https://data.quora.com/First-Quora-Dataset-Release-Question-Pairs).
 
