@@ -131,12 +131,12 @@ function loginForm(){
 				</div>
  
             <div id="chatbox1">
-            <?php
+          <!--   
             if(file_exists("response.html") && filesize("response.html") > 0){
                 $contents = file_get_contents("response.html");          
                 echo $contents;
             }
-            ?>
+            ?> -->
             </div>
  
 
@@ -149,10 +149,16 @@ function loginForm(){
         <script type="text/javascript">
             // jQuery Document
             $(document).ready(function () {
+				$("#chatbox1").html(" "); 
                 $("#submitmsg").click(function () {
                     var clientmsg = $("#usermsg").val();
                     $.post("post.php", { text: clientmsg });
                     $("#usermsg").val("");
+					
+                    return false;
+                });
+                $("#processQ").click(function () {
+					loadResponseLog();
                     return false;
                 });
  
@@ -176,7 +182,6 @@ function loginForm(){
  
                function loadResponseLog() {
                     var oldscrollHeight = $("#chatbox1")[0].scrollHeight - 20; //Scroll height before the request
- 
                     $.ajax({
                         url: "response.html",
                         cache: false,
@@ -193,7 +198,7 @@ function loginForm(){
                 }
 				
                 setInterval (loadLog, 2500);
-				setInterval (loadResponseLog, 2500);
+				//setInterval (loadResponseLog, 2500);
  
                 $("#exit").click(function () {
                     var exit = confirm("Are you sure you want to end the session?");
