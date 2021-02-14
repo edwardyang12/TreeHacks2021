@@ -205,10 +205,15 @@ def parse_to_array(parse):
   return arr
 
 # This section based at least partially on https://stanfordnlp.github.io/stanza/#getting-started and https://stanfordnlp.github.io/stanza/depparse.html
-#stanza.download("en")
+stanza.download("en")
+nlp = stanza.Pipeline("en", processors='depparse, lemma, pos, tokenize')
+
+def convert_to_array(text):
+  parse = nlp(text).sentences[0]
+  return parse_to_array(parse)
+
 #text = "Some happy people quickly create sentences like this one in the cold cold cold cold cold cold cold cold cold cold cold cold cold cold cold cold snowy explosive miscellaneous morning"
 # text = "This sentence has an object with a clause"
-#nlp = stanza.Pipeline("en", processors='depparse, lemma, pos, tokenize')
 #parse = nlp(text).sentences[0]
 #pr(parse)
 #parse_to_array(parse)
